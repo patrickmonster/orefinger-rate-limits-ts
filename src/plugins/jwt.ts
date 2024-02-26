@@ -1,7 +1,7 @@
 'use strict';
-import fp from 'fastify-plugin';
 import jwt from '@fastify/jwt';
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import fp from 'fastify-plugin';
 
 declare module 'fastify' {
     interface FastifyInstance {
@@ -37,13 +37,6 @@ declare module '@fastify/jwt' {
 export default fp(async function (fastify, opts) {
     fastify.register(jwt, {
         secret: process.env.JWT_SECRET || 'secret',
-    });
-
-    fastify.decorate('masterkey', function (request: FastifyRequest, reply: FastifyReply, done: Function) {
-        const key = request.headers.master || request.headers.Master;
-        if (process.env.MASTER_KEY && key !== process.env.MASTER_KEY) {
-            reply.code(400).send({ error: 'invalid key', key });
-        } else done();
     });
 
     fastify.decorate('authenticate', function (request: FastifyRequest, reply: FastifyReply, done: Function) {

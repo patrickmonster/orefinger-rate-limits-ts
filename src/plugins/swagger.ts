@@ -34,11 +34,6 @@ export default fp(async function (fastify, opts) {
                         type: 'http',
                         scheme: 'bearer',
                     },
-                    Master: {
-                        type: 'apiKey',
-                        name: 'Master',
-                        in: 'header',
-                    },
                 },
             },
             paths: {},

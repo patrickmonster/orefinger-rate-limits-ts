@@ -7,8 +7,6 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { env } from 'process';
 
-import { ajvFilePlugin } from '@fastify/multipart';
-
 const envDir = join(env.PWD || __dirname, `/.env`);
 if (existsSync(envDir)) {
     config({ path: envDir });
@@ -23,14 +21,10 @@ if (existsSync(envDir)) {
 // 환경변수
 
 const server = fastify({
-    // logger: env.NODE_ENV != 'prod'
     logger: {
         transport: {
             target: '@fastify/one-line-logger',
         },
-    },
-    ajv: {
-        plugins: [ajvFilePlugin],
     },
 });
 
