@@ -1,3 +1,4 @@
+import { WebSocket } from '@fastify/websocket';
 import { Message, SendMessage } from 'interface/message';
 import { join } from 'path';
 import autoLoader, { getCommand } from 'utils/autoCommand';
@@ -10,6 +11,7 @@ const messageComponent = getCommand<SendMessage, any>(commands);
 export default (ws: WebSocket, message: string) => {
     const { type, data, sessionId } = JSON.parse(message) as Message<any>;
 
+    // 인증 여부 확인
     const command = messageComponent.find(module => type.startsWith(module[0]));
     if (command) {
         const [, exec] = command;
