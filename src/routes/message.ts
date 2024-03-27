@@ -1,11 +1,11 @@
 import { getTask } from 'controllers/ecs';
 import { FastifyInstance } from 'fastify';
-import { WebSocketContainer } from 'utils/ws';
+import container from 'utils/ws';
 
 export default async (fastify: FastifyInstance, opts: any) => {
-    //
-    const container = new WebSocketContainer();
-
+    process.on('SIGINT', () => {
+        container.close();
+    });
     fastify.get<{
         Params: { taskId: string };
     }>('/ws/:taskId', { websocket: true }, async (socket, request) => {

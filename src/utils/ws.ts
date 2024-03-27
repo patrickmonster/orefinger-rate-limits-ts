@@ -6,10 +6,12 @@ export const WebsocketMessageType = {
     EVENT: Symbol('EVENT'),
     MESSAGE: Symbol('MESSAGE'),
 
+    CLOSE_SERVER: Symbol('CLOSE_SERVER'),
+
     CONNECT_COUNT: Symbol('CONNECT_COUNT'),
 };
 
-export class WebSocketContainer {
+class WebSocketContainer {
     private taskQueue: Map<string, WebSocket> = new Map<string, WebSocket>();
 
     public addTaskQueue(taskId: string, socket: WebSocket) {
@@ -100,6 +102,7 @@ export class WebSocketContainer {
     public send(taskId: string, message: string) {
         this.sendObject(taskId, {
             type: WebsocketMessageType.MESSAGE,
+            task: taskId,
             data: { message },
         });
     }
@@ -109,4 +112,18 @@ export class WebSocketContainer {
             socket.send(message);
         });
     }
+
+    public close() {
+        this.taskQueue.forEach(socket => {
+            socket.send(
+                JSON.stringify({
+                    type: WebsocketMessageType.CLOSE_SERVER,
+                    data: { message: 'Server closed' },
+                })
+            );
+            socket.close();
+        });
+    }
 }
+
+export default new WebSocketContainer();
